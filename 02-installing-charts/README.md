@@ -182,7 +182,9 @@ basic configuration to the chart.
 
 All of the charts in the stable repository have their configuration values
 documented. You can see the Wordpress chart documentation
-[here](https://github.com/helm/charts/tree/master/stable/wordpress).
+[here](https://github.com/helm/charts/tree/master/stable/wordpress) or can run
+`helm inspect stable/wordpress` to view all metadata and available parameters
+for the Chart
 
 For this step, you'll want to change the name of the blog, set your first and
 last name, and change the email address. To do this, first create a file called

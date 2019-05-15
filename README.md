@@ -1,18 +1,24 @@
-# Helm Workshop: Microsoft Reactor, 2018
+# Helm Workshop: KubeCon Barcelona 2019
 
-The purpose of this workshop is to learn how to build new Helm 2 charts.
+The purpose of this workshop is to learn how to use Helm and build charts
 
 ## Workshop Format
 
 This workshop is split into numbered sections outlined below:
 1. [Getting Started](01-getting-started/)
-1. [Charts](02-charts/)
-1. [Subcharts](03-subcharts/)
-1. [Templating](04-templating/)
+2. [Installing Charts](02-installing-charts)
+3. [Charts](03-charts/)
+4. [Subcharts](04-subcharts/)
+5. [Templating](05-templating/)
 
 ## Goal
 
-Our goal for this workshop is to create a Helm chart that takes Docker's popular [voting app demo](https://github.com/dockersamples/example-voting-app) and installs it in a Kubernetes cluster.
+We have two goals for this workshop:
+
+1. Learn how to install and manage charts
+2. Create your own Helm Chart using Docker's popular [voting app
+   demo](https://github.com/dockersamples/example-voting-app) and install it in
+   a Kubernetes cluster.
 
 We will start with a simple chart, and then add from there.
 
@@ -26,7 +32,8 @@ Our application will have five parts:
 
 ### Quick Reference
 
-In this guide, we will be building a chart based on a sample voting app. Here are the images you will need:
+In this guide, we will be building a chart based on a sample voting app. Here
+are the images you will need:
 
 - `redis:alpine` - The Redis server for a work queue
 - `postgres:9.4` - The persistent data storage

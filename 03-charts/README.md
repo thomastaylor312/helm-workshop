@@ -151,4 +151,4 @@ Note that both a deployment and a service are created for you. If you are using 
 
 At this point, your new app won't work, because it will be trying to contact a Redis database that is not there. In the next section, we'll look at adding some other parts.
 
-Up next: [Subcharts](../03-subcharts/).
+Up next: [Subcharts](../04-subcharts/).

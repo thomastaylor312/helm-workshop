@@ -1,6 +1,7 @@
 # Getting Started with Helm
 
-Install helm on your machine and get familiar with the basic commands using the official [quickstart guide](https://docs.helm.sh/using_helm/#quickstart)
+Install Helm on your machine and get familiar with the basic commands using the
+official [quickstart guide](https://docs.helm.sh/using_helm/#quickstart)
 
 ## Prerequisites
 
@@ -26,19 +27,20 @@ And on Windows:
 $ choco install kubernetes-helm
 ```
 
-> More installation methods documented in [installing helm](https://docs.helm.sh/using_helm/#installing-helm)
+> More installation methods documented in the [documentation for installing
+> Helm](https://docs.helm.sh/using_helm/#installing-helm)
 
 ## Initialize Helm and Install Tiller
 
-Once you have Helm ready, you can initialize the local environment and install Tiller into your Kubernetes cluster in one step.
-
-> If your cluster has Role-Based Access Control (RAC) enabled, you may want to [configure a service account and rules](https://docs.helm.sh/using_helm/#role-based-access-control) before proceeding.
+Once you have Helm ready, you can initialize the local environment and install
+Tiller into your Kubernetes cluster in one step.
 
 ```console
 $ helm init
 ```
 
-Helm will use whatever Kubernetes cluster your context is pointing to. Use `kubectl` to learn about your contexts:
+Helm will use whatever Kubernetes cluster your context is pointing to. Use
+`kubectl` to learn about your contexts:
 
 ```console
 $ kubectl config current-context
@@ -49,8 +51,8 @@ You can verify your setup by running the version command.
 
 ```console
 $ helm version
-Client: &version.Version{SemVer:"v2.12.0", GitCommit:"d325d2a9c179b33af1a024cdb5a4472b6288016a", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.12.0", GitCommit:"d325d2a9c179b33af1a024cdb5a4472b6288016a", GitTreeState:"clean"}
+Client: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
 ```
 
 Inspect the deployment if you get an error.
@@ -59,15 +61,17 @@ Inspect the deployment if you get an error.
 $ kubectl -n kube-system describe deployment tiller-deploy
 ```
 
-## Using Helm
+Once Tiller is up and running, you'll need to grant an admin role to the default
+service account.
 
-If this is your first time using Helm, here are the critical commands.
+```console
+$ kubectl create clusterrolebinding add-on-cluster-admin \
+  --clusterrole=cluster-admin --serviceaccount=kube-system:default
+```
 
-- `helm help`: Show help. You can get more info on a command by doing `helm COMMAND --help`, such as `helm list --help`
-- `helm search STRING`: Find charts to install
-- `helm install -n NAME CHART`: Install something (create a release). Example: `helm install -n my-test stable/wordpress`
-- `helm status NAME`: Get the status of a release
-- `helm delete NAME`: Delete the release. Example: `helm delete my-test`
+IMPORTANT: Please note that this is ok for personal development, but for
+production use cases, defining the exact roles and permissions on your cluster
+requires a deeper knowledge of Kubernetes' RBAC model
 
 
-Up next: [Charts](../02-charts/).
+Up next: [Installing Charts](../02-installing-charts/).

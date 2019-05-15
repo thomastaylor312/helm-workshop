@@ -54,4 +54,4 @@ $ helm delete --purge voting-app
 
 Then you can re-run the installer freshly.
 
-Up next: [Templates](../04-templating/).
+Up next: [Templates](../05-templating/).

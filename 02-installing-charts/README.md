@@ -1,12 +1,9 @@
 # Installing and Configuring Charts
 
 ## Chart Repositories
-Helm Charts are often stored in repositories. Helm can fetch specific versions
-fof charts from these repositories and install them on the cluster. There are
-two curated public repositories managed by a set of Helm maintainers:
-[stable](https://github.com/helm/charts/tree/master/stable) and
-[incubator](https://github.com/helm/charts/tree/master/incubator). These Charts
-are well maintained and generally follow the best practices for writing Charts.
+Helm Charts are often stored in public or private repositories. Helm can fetch specific versions of charts from these repositories and install them on the cluster.
+
+There are two curated public repositories managed by a set of Helm maintainers: [stable](https://github.com/helm/charts/tree/master/stable) and [incubator](https://github.com/helm/charts/tree/master/incubator). These Charts are well maintained and generally follow the best practices for writing Charts.
 
 ### Searching for Charts
 By default, Helm will search for charts in the stable repo. You can list all of
@@ -14,12 +11,11 @@ the available charts by running:
 
 ```console
 $ helm search
-NAME                                            CHART VERSION   APP VERSION                     DESCRIPTION  
-stable/aerospike                                0.2.5           v4.5.0.5                        A Helm chart for Aerospike in Kubernetes                    
-stable/airflow                                  2.8.2           1.10.2                          Airflow is a platform to programmatically author, schedul...
-stable/ambassador                               2.4.1           0.61.0                          A Helm chart for Datawire Ambassador                        
-stable/anchore-engine                           1.0.1           0.4.0                           Anchore container analysis and policy evaluation engine s...
-stable/apm-server                               2.1.0           7.0.0                           The server receives data from the Elastic APM agents and ...
+NAME                                    CHART VERSION   APP VERSION                     DESCRIPTION                                                 
+stable/acs-engine-autoscaler            2.2.0           2.1.1                           Scales worker nodes within agent pools                      
+stable/aerospike                        0.1.7           v3.14.1.2                       A Helm chart for Aerospike in Kubernetes                    
+stable/anchore-engine                   0.2.6           0.2.4                           Anchore container analysis and policy evaluation engine s...
+stable/apm-server                       0.1.0           6.2.4                           The server receives data from the Elastic APM agents and ...
 ...
 ```
 
@@ -32,25 +28,26 @@ applications like so:
 
 ```console
 $ helm search prometheus
-NAME                                    CHART VERSION   APP VERSION DESCRIPTION                                                 
-incubator/prometheus                    0.1.4                       A Helm chart for Kubernetes                                 
-stable/prometheus                       8.11.1          2.9.2       Prometheus is a monitoring system and time series database. 
-stable/prometheus-adapter               v0.5.0          v0.5.0      A Helm chart for k8s prometheus adapter                     
-stable/prometheus-rabbitmq-exporter     0.4.1           v0.29.0     Rabbitmq metrics exporter for prometheus                    
-stable/prometheus-redis-exporter        1.0.2           0.28.0      Prometheus exporter for Redis metrics                       
-stable/prometheus-snmp-exporter         0.0.2           0.14.0      Prometheus SNMP Exporter                                    
-stable/prometheus-to-sd                 0.1.1           0.2.2       Scrape metrics stored in prometheus format and push them ...
-stable/elasticsearch-exporter           1.2.0           1.0.2       Elasticsearch stats exporter for Prometheus                 
-stable/helm-exporter                    0.2.3           0.4.0       Exports helm release stats to prometheus                    
-stable/karma                            1.1.13          v0.34       A Helm chart for Karma - an UI for Prometheus Alertmanager  
-stable/stackdriver-exporter             1.1.0           0.6.0       Stackdriver exporter for Prometheus                         
-stable/weave-cloud                      0.3.2           1.2.0       Weave Cloud is a add-on to Kubernetes which provides Cont...
-stable/kube-state-metrics               1.5.0           1.6.0       Install kube-state-metrics to generate and expose cluster...
+NAME                                    CHART VERSION   APP VERSION     DESCRIPTION                                                 
+stable/prometheus                       7.4.1           2.5.0           Prometheus is a monitoring system and time series database. 
+stable/prometheus-adapter               v0.2.0          v0.2.1          A Helm chart for k8s prometheus adapter                     
+stable/prometheus-blackbox-exporter     0.2.0           0.12.0          Prometheus Blackbox Exporter                                
+stable/prometheus-cloudwatch-exporter   0.2.1           0.5.0           A Helm chart for prometheus cloudwatch-exporter             
+[...]
+stable/weave-cloud                      0.3.0           1.1.0           Weave Cloud is a add-on to Kubernetes which provides Cont...
+stable/kube-state-metrics               0.11.0          1.4.0           Install kube-state-metrics to generate and expose cluster...
+stable/mariadb                          5.2.3           10.1.37         Fast, reliable, scalable, and easy to use open-source rel...
 ```
 
 ## Install a Chart
-Installing a chart from a repository is very simple. Once you have found the
-chart you want to install, simply run:
+
+Your Kubernetes cluster starts with no helm charts installed:
+
+```console
+$ helm list
+```
+
+Use the `install` command to install a chart from a repository.
 
 ```console
 $ helm install stable/wordpress
@@ -94,10 +91,11 @@ hardy-indri-mariadb  0/1    0s
 
 
 NOTES:
-1. Get the WordPress URL:
+1. Get the WordPress URL, using your release name instead of `hardy-indri`:
 
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace default -w hardy-indri-wordpress'
+  NOTE: It may take several minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace default -w _release-name_-wordpress' - the EXTERNAL-IP will change from <pending> to an IP address.
+
   export SERVICE_IP=$(kubectl get svc --namespace default hardy-indri-wordpress --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
   echo "WordPress URL: http://$SERVICE_IP/"
   echo "WordPress Admin URL: http://$SERVICE_IP/admin"
@@ -111,7 +109,7 @@ NOTES:
 This creates a "Release," which is the unique combination of your configuration
 applied to the chart. You can name the release or Helm will automatically
 generate one for you. The output shows all of the resources that were created
-and some getting started steps for this specfic chart. To see the status of all
+and some getting started steps for this specific chart. To see the status of all
 resources again, you can run `helm status <release_name>`. You'll also see that
 the output from installing the chart includes some steps specific for this
 chart. Follow those steps to take a look at your new wordpress server!
@@ -170,10 +168,18 @@ hardy-indri-mariadb  1/1    18m
 
 ### Deleting a release
 If you no longer need a release, you can delete it. Deleting a release will
-remove all Kubernetes resources that it created. It will retain the history so
-you can restore it if needed. Before we continue to the next step, you'll need
-to delete the release. To delete the release you just created, run `helm delete
-<release_name>`
+remove all Kubernetes resources that it created. Helm will retain the history so
+you can restore a deleted release if needed, by performing a rollback to the desired version.
+
+```console
+$ helm delete <release-name>
+release "<release-name>" deleted
+$ helm history <release-name>
+REVISION	UPDATED                 	STATUS    	CHART          	DESCRIPTION      
+1       	Fri May 17 17:00:41 2019	SUPERSEDED	wordpress-3.3.0	Install complete 
+2       	Fri May 17 17:30:22 2019	SUPERSEDED	wordpress-3.3.0	Upgrade complete 
+3       	Fri May 17 17:36:56 2019	DELETED   	wordpress-3.3.0	Deletion complete
+```
 
 ### Configuring a chart
 When you installed the chart previously, you did not provide any additional
@@ -181,10 +187,9 @@ configuration, so the chart used its defaults. Now let's try providing some
 basic configuration to the chart.
 
 All of the charts in the stable repository have their configuration values
-documented. You can see the Wordpress chart documentation
-[here](https://github.com/helm/charts/tree/master/stable/wordpress) or can run
+documented. You can look at the [Wordpress chart documentation](https://github.com/helm/charts/tree/master/stable/wordpress) or can run
 `helm inspect stable/wordpress` to view all metadata and available parameters
-for the Chart
+for the Chart.
 
 For this step, you'll want to change the name of the blog, set your first and
 last name, and change the email address. To do this, first create a file called
@@ -196,7 +201,7 @@ address is below:
 wordpressEmail: mycoolemail@example.com
 ```
 
-Look through the documentation and find the names of the values to change your
+Look in the [Wordpress chart documentation](https://github.com/helm/charts/tree/master/stable/wordpress) to find the names of the values to change your
 first and last name and the name of the blog and add those to your
 `extra-values.yaml` file.
 
@@ -231,19 +236,19 @@ Run the following command to upgrade your release:
 $ helm upgrade <release_name> stable/wordpress --reuse-values --set mariadb.enabled=false
 ```
 
-This command is disabling the database (which will obviously cause problems).
 Note that with the upgrade command, you need to provide the release name and the
 chart to use. The `--reuse-values` flag is a handy shortcut that makes it so you
 don't have to pass the values file again with `-f` as it will reuse all of the
 values set in the current release.
 
+So what did we do here? We set the database to false, which removed that pod. Without a database, our wordpress will not be healthy.
+
 If you run `helm status <release_name>` or `kubectl get pods` you'll see that
-the new pod is erroring:
+the new wordpress pod isn't in a ready state (and no amount of waiting will move it into a ready state):
 
 ```console
 NAME                                        READY  STATUS                      RESTARTS  AGE
 brown-greyhound-wordpress-6f8b897899-nvplh  0/1    Running                     0         2m52s
-brown-greyhound-wordpress-77479976b8-s82jg  0/1    CreateContainerConfigError  0         12m
 ```
 
 Luckily for us, we have the `helm rollback` command. You can rollback to any
@@ -260,7 +265,7 @@ There is also a shortcut that we will use here to rollback to the last release:
 
 ```console
 $ helm rollback <release_name> 0
-Rollback was a success! Happy Helming!
+Rollback was a success.
 ```
 
 If you run `helm history` again, you'll see that it rolled back to the previous
@@ -275,7 +280,7 @@ REVISION    UPDATED                     STATUS      CHART           DESCRIPTION
 ```
 
 Then, if you run `helm status <release_name>` or `kubectl get pods`, you'll see
-that the pod is running again:
+that the pod is running again and this time it's in a ready state:
 
 ```console
 ==> v1/Pod(related)
@@ -284,8 +289,19 @@ brown-greyhound-mariadb-0                   1/1    Running  0         102s
 brown-greyhound-wordpress-77479976b8-s82jg  1/1    Running  1         17m
 ```
 
+You can also use `rollback` to restore a deleted release. To undo a delete, you need the release name and the desired version to redeploy:
+
+```console
+$ helm rollback <release-name> <revision-number>
+Rollback was a success.
+
+```
+
+After deletion, re-creation will take a little time, so you can watch with `kubectl get all` until you see all resources healthy again.
+
+
 ## Conclusion
-At this point, you should know how to install, upgrade, delete, and rollback a
-chart and how to provide configuration
+At this point, you have practiced how to install a chart, how to upgrade, delete, and rollback a
+release, and how to customize release configuration. You can delete any releases and run through these exercises again if desired!
 
 Up next: [Charts](../03-charts/).

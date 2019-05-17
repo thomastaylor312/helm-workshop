@@ -1,6 +1,6 @@
 # Helm Workshop: KubeCon Barcelona 2019
 
-The purpose of this workshop is to learn how to use Helm and build charts
+The purpose of this workshop is to learn how to use Helm and build Helm charts
 
 ## Workshop Format
 
@@ -11,7 +11,7 @@ This workshop is split into numbered sections outlined below:
 4. [Subcharts](04-subcharts/)
 5. [Templating](05-templating/)
 
-## Goal
+## Goals
 
 We have two goals for this workshop:
 

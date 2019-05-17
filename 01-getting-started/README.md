@@ -5,14 +5,28 @@ official [quickstart guide](https://docs.helm.sh/using_helm/#quickstart)
 
 ## Prerequisites
 
-- A Kuberbetes cluster with kubectl configured to access it.
+- A Kubernetes cluster with kubectl configured to access it. You can use the [local machine solution](https://kubernetes.io/docs/setup/pick-right-solution/#local-machine-solutions) of your choice, or a cloud provider's hosted option. We'll use [AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough) but this tutorial will work for any Kubernetes option.
 
 ## Installing the Helm Client
 
-On Mac, the easiest way to install Helm is to use Homebrew:
+If you already have Helm installed, check to see if it is [latest version](https://github.com/helm/helm/releases/latest), then upgrade if need be.
+
+```console
+$ helm version
+```
+
+On Mac, the easiest way to install or upgrade Helm is to use Homebrew.
+
+If you need to install helm:
 
 ```console
 $ brew install kubernetes-helm
+```
+
+If you need to upgrade helm:
+
+```console
+$ brew upgrade kubernetes-helm
 ```
 
 On Ubuntu:
@@ -27,7 +41,7 @@ And on Windows:
 $ choco install kubernetes-helm
 ```
 
-> More installation methods documented in the [documentation for installing
+> More installation methods are documented in the [documentation for installing
 > Helm](https://docs.helm.sh/using_helm/#installing-helm)
 
 ## Initialize Helm and Install Tiller
@@ -51,8 +65,8 @@ You can verify your setup by running the version command.
 
 ```console
 $ helm version
-Client: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.13.0", GitCommit:"79d07943b03aea2b76c12644b4b54733bc5958d6", GitTreeState:"clean"}
+Client: &version.Version{SemVer:"v2.14.0", GitCommit:"05811b84a3f93603dd6c2fcfe57944dfa7ab7fd0", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.14.0", GitCommit:"05811b84a3f93603dd6c2fcfe57944dfa7ab7fd0", GitTreeState:"clean"}
 ```
 
 Inspect the deployment if you get an error.

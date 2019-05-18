@@ -43,10 +43,10 @@ All we need to change in this file is the description.
 
 ```yaml
 apiVersion: v1      # The chart schema version, always v1 for Helm 2
-version: 0.1.0      # The version of the chart. Change this for each release.
 appVersion: "1.0"   # The version of the main app in this chart. OPTIONAL
 description: An example cloud native voting app
 name: voter
+version: 0.1.0      # The version of the chart. Change this for each release.
 ```
 
 Save this. You can verify that you correctly entered the data by running:
@@ -78,6 +78,7 @@ image:
   tag: stable
   pullPolicy: IfNotPresent
 
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -90,9 +91,10 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
   hosts:
-    - chart-example.local
+    - host: chart-example.local
+      paths: []
+
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -104,11 +106,11 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
   # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
 
 nodeSelector: {}
 

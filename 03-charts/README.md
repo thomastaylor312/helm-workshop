@@ -142,15 +142,46 @@ And also change one thing in `service`:
 
 Once you've done that, you will have a runnable chart that we can test. We'll be able to install it, but not use it.
 
-> If you are on Azure, add `--set service.type=LoadBalancer` to the end of the following command
-
 ```console
-$ helm install -n voting-app ./voter
-# ... some info
+$ helm install -n voting-app ./voter --set service.type=LoadBalancer
+NAME:   voting-app
+LAST DEPLOYED: Sat May 18 20:33:56 2019
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/Deployment
+NAME              READY  UP-TO-DATE  AVAILABLE  AGE
+voting-app-voter  0/1    0           0          0s
+
+==> v1/Pod(related)
+NAME                               READY  STATUS   RESTARTS  AGE
+voting-app-voter-79769697d6-r7dkj  0/1    Pending  0         0s
+
+==> v1/Service
+NAME              TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)   AGE
+voting-app-voter  ClusterIP  10.103.94.124  <none>       5000/TCP  0s
+
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=voter,app.kubernetes.io/instance=voting-app" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
 ```
 
-Note that both a deployment and a service are created for you. If you are using Docker Desktop, you'll be able to see your new app by pointing a web browser at `localhost:5000`. For other clusters, flag down one of us and ask about how to configure it.
+Note that both a deployment and a service are created for you. To connect to the
+app, you'll need to find the IP address to connect to:
 
-At this point, your new app won't work, because it will be trying to contact a Redis database that is not there. In the next section, we'll look at adding some other parts.
+```console
+$ kubectl get svc voting-app-voter
+NAME              TYPE          CLUSTER-IP     EXTERNAL-IP  PORT(S)         AGE
+voting-app-voter  LoadBalancer  10.103.94.124  localhost    5000:32612/TCP  9m52s
+```
+
+Use the value for external IP and access it in your browser at
+`http://$EXTERNAL_IP:5000`
+
+At this point, your new app won't work, because it will be trying to contact a Redis database that is not there. In the next section, we'll look at adding other necessary parts to your chart.
 
 Up next: [Subcharts](../04-subcharts/).

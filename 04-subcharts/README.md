@@ -6,11 +6,11 @@ Try this:
 
 ```console
 $ helm search redis
-NAME                                    CHART VERSION   APP VERSION     DESCRIPTION
-stable/prometheus-redis-exporter        0.3.0           0.16.0          Prometheus exporter for Redis metrics
-stable/redis                            3.7.6           4.0.11          Open source, advanced key-value store. It is of...
-stable/redis-ha                         2.2.1           4.0.8-r0        Highly available Redis cluster with multiple se...
-stable/sensu                            0.2.3           0.28            Sensu monitoring framework backed by the Redis ...
+NAME                              CHART VERSION APP VERSION   DESCRIPTION    
+stable/prometheus-redis-exporter  1.0.2         0.28.0        Prometheus exporter for Redis metrics                       
+stable/redis                      7.1.0         4.0.14        Open source, advanced key-value store. It is often referr...
+stable/redis-ha                   3.4.2         5.0.3         Highly available Kubernetes implementation of Redis         
+stable/sensu                      0.2.3         0.28          Sensu monitoring framework backed by the Redis transport  
 ```
 
 See how we already have a chart that adds `redis` support? Rather than create our own, let's use that. (Note: If you are feeling extra ambitious, you can write your own Redis chart. But it will take about 45 minutes.)
@@ -24,11 +24,9 @@ Let's create a `requirements.yaml` file next to the `Chart.yaml` in our chart. H
 ```yaml
 dependencies:
   - name: redis        # from search results above
-    version: 3.7.6     # Also from the search results above
-    repository: https://kubernetes-charts.storage.googleapis.com
+    version: 7.1.0    # Also from the search results above
+    repository: "@stable" # Using the @ symbol allows you to use the name of a repository instead of the URL
 ```
-
-Note that the `repository` URL comes from running `helm repo list` and copying the URL for the `stable` repo, which is where the Redis chart lives.
 
 ### Add PostgreSQL on your own
 
@@ -38,11 +36,23 @@ Next, run `helm search postgresql` and repeat the above for Postgres. By the end
 
 Run `helm dep up` to have Helm fetch those dependencies for you. When completed, you should be able to see two new directories inside of your chart's `charts` subdirectory.
 
+```console
+$ helm dep up
+Hang tight while we grab the latest from your chart repositories...
+...Unable to get an update from the "local" chart repository (http://127.0.0.1:8879/charts):
+  Get http://127.0.0.1:8879/charts/index.yaml: dial tcp 127.0.0.1:8879: connect: connection refused
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+Saving 2 charts
+Downloading redis from repo https://kubernetes-charts.storage.googleapis.com
+Downloading postgresql from repo https://kubernetes-charts.storage.googleapis.com
+$ ls charts
+postgresql-4.0.3.tgz  redis-7.1.0.tgz
+```
+
 ## Upgrade Your Release
 
-If you now run `helm upgrade voting-app .` you can upgrade your chart and get the new redis and postgres databases installed.
-
-> Note: If you are on Azure, make sure to add the `--set service.type=LoadBalancer` flag again
+If you now run `helm upgrade voting-app --reuse-values .` you can upgrade your chart and get the new redis and postgres databases installed.
 
 ## Tip: Re-installing
 
@@ -52,6 +62,6 @@ If you ever need to reinstall instead of upgrading, use the following:
 $ helm delete --purge voting-app
 ```
 
-Then you can re-run the installer freshly.
+Then you can re-run a fresh install
 
 Up next: [Templates](../05-templating/).

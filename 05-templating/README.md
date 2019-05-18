@@ -36,14 +36,14 @@ spec:
   replicas: {{ .Values.replicaCount }}
 ```
 
-As we can see, this looks a bit like a Deployment object in YAML format, sprinked with a few templates from `gotemplate`. We can see a few unique templates. Let's look at a few in particular:
+As we can see, this looks a bit like a Deployment object in YAML format, sprinkled with a few templates from `gotemplate`. We can see a few unique templates. Let's look at a few in particular:
 
 1. `{{ template "voter.fullname" . }}`
 1. `{{ template "voter.name" . }}`
 1. `{{ .Release.Name }}`
 1. `{{ .Values.replicaCount }}`
 
-`template "voter.fullname"` is a template partial. Template partials are "helper" functions defined within the chart to abstract some common funcion calls to make the templates more easily readable and DRY. When we first created the chart, a file called `_helpers.tpl` was created in the `templates` directory. That file is the default location for template partials, and Helm provides a few template partials out the gate in that file.
+`template "voter.fullname"` is a template partial. Template partials are "helper" functions defined within the chart to abstract some common function calls to make the templates more easily readable. When we first created the chart, a file called `_helpers.tpl` was created in the `templates` directory. That file is the default location for template partials, and Helm provides a few template partials out the gate in that file.
 
 `"voter.fullname"` accepts one variable as input: the dot variable (`.`). The dot variable contains all of the variables injected by Helm into the template engine, such as values or information about the cluster. More on the dot variable in a second.
 
@@ -64,11 +64,15 @@ There are a few other built-in objects provided by Helm. We'll see more of these
 - `Release`: This object describes the release itself. It has several objects inside of it:
   - `Release.Name`: The release name
   - `Release.Time`: The time of the release
-  - `Release.Namespace`: The namespace to be released into (if the manifest doesn't override)
+  - `Release.Namespace`: The namespace to be released into (if the manifest
+    doesn't override)
   - `Release.Service`: The name of the releasing service (always `Tiller`).
-  - `Release.Revision`: The revision number of this release. It begins at 1 and is incremented for each `helm upgrade`.
-  - `Release.IsUpgrade`: This is set to `true` if the current operation is an upgrade or rollback.
-  - `Release.IsInstall`: This is set to `true` if the current operation is an install.
+  - `Release.Revision`: The revision number of this release. It begins at 1 and
+    is incremented for each `helm upgrade`.
+  - `Release.IsUpgrade`: This is set to `true` if the current operation is an
+    upgrade or rollback.
+  - `Release.IsInstall`: This is set to `true` if the current operation is an
+    install.
 - `Values`: Values passed into the template from the `values.yaml` file and from user-supplied files. By default, `Values` is empty.
 - `Chart`: The contents of the `Chart.yaml` file. Any data in `Chart.yaml` will be accessible here. For example `{{.Chart.Name}}-{{.Chart.Version}}` will print out the `mychart-0.1.0`.
   - The available fields are listed in the [Charts Guide](https://github.com/helm/helm/blob/master/docs/charts.md#the-chartyaml-file)
@@ -77,7 +81,8 @@ There are a few other built-in objects provided by Helm. We'll see more of these
   - `Files.GetBytes` is a function for getting the contents of a file as an array of bytes instead of as a string. This is useful for things like images.
 - `Capabilities`: This provides information about what capabilities the Kubernetes cluster supports.
   - `Capabilities.APIVersions` is a set of versions.
-  - `Capabilities.APIVersions.Has $version` indicates whether a version (`batch/v1`) is enabled on the cluster.
+  - `Capabilities.APIVersions.Has $version` indicates whether a version
+    (`batch/v1`) is enabled on the cluster.
   - `Capabilities.KubeVersion` provides a way to look up the Kubernetes version. It has the following values: `Major`, `Minor`, `GitVersion`, `GitCommit`, `GitTreeState`, `BuildDate`, `GoVersion`, `Compiler`, and `Platform`.
   - `Capabilities.TillerVersion` provides a way to look up the Tiller version. It has the following values: `SemVer`, `GitCommit`, and `GitTreeState`.
 - `Template`: Contains information about the current template that is being executed
@@ -91,7 +96,8 @@ image:
     repository: technosophos/voting-app
 ```
 
-Helm will render that as `.Values.image.repository` to be made available to you in the templates.
+Helm will render that as `.Values.image.repository` to be made available to you
+in the templates.
 
 ## Learning more about Chart Templates
 
@@ -137,8 +143,7 @@ Once your template is done, re-install or upgrade your Helm chart. At this point
 
 ## Add the Results Viewer
 
-Ready for more? There's one last piece of this app: The results viewer. To add this part, we need to create
-two more template files:
+Ready for more? There's one last piece of this app: The results viewer. To add this part, we need to create two more template files:
 
 ```yaml
 apiVersion: apps/v1

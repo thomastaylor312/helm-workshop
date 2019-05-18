@@ -17,7 +17,7 @@ See how we already have a chart that adds `redis` support? Rather than create ou
 
 ## Subcharts and `requirements.yaml`
 
-In Helm, a _subchart_ is a regular Helm chart that is a dependency of your chart. By adding it to a special file called `requirements.yaml`, you can let Helm manage that chart for you.
+In Helm, a _subchart_ is a regular Helm chart that your chart depends on. By adding it to a special file called `requirements.yaml`, you can let Helm manage that chart for you.
 
 Let's create a `requirements.yaml` file next to the `Chart.yaml` in our chart. Here's what belongs inside:
 

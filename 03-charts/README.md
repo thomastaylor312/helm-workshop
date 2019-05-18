@@ -140,7 +140,7 @@ And also change one thing in `service`:
 
 (See the images list in the main [README](../README.md) for a quick description of each.)
 
-Once you've done that, you will have a runnable chart that we can test. We'll be able to install it, but not use it.
+Once you've done that, you will have a runnable chart that we can test. We'll be able to install it, but it will not fully work, until we have added and installed Redis and other components for the app to function properly.
 
 ```console
 $ helm install -n voting-app ./voter --set service.type=LoadBalancer

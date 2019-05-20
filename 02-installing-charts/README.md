@@ -6,8 +6,19 @@ Helm Charts are often stored in public or private repositories. Helm can fetch s
 There are two curated public repositories managed by a set of Helm maintainers: [stable](https://github.com/helm/charts/tree/master/stable) and [incubator](https://github.com/helm/charts/tree/master/incubator). These Charts are well maintained and generally follow the best practices for writing Charts.
 
 ### Searching for Charts
-By default, Helm will search for charts in the stable repo. You can list all of
-the available charts by running:
+By default, Helm will search for charts in the stable repo.
+
+```console
+$ helm repo list
+```
+
+Optional: you can add other repos, such as the incubator repo:
+
+```console
+$ helm repo add incubator https://storage.googleapis.com/kubernetes-charts-incubator
+```
+
+You can list all of the available charts by running:
 
 ```console
 $ helm search
